@@ -69,16 +69,16 @@ G4VPhysicalVolume* Geometry::Construct()
    G4double leng_Z_In = leng_Z_Out;
    G4Tubs* solid_Out = new G4Tubs("Solid_Out", 0., radius_Out, leng_Z_Out/2., 0., 360.*deg);
    G4Tubs* solid_In = new G4Tubs("Solid_In", 0., radius_In, leng_Z_In/2., 0., 360.*deg);
-//   G4SubtractionSolid* solid_Poly = new G4SubtractionSolid("Solid_Poly", solid_Out, solid_In);
+   G4SubtractionSolid* solid_Poly = new G4SubtractionSolid("Solid_Poly", solid_Out, solid_In);
    // Define logical volume
    G4Material* materi_Poly = materi_Man->FindOrBuildMaterial("G4_POLYETHYLENE");
-//   G4LogicalVolume* logVol_Poly = 
-//     new G4LogicalVolume(solid_Poly, materi_Poly, "LogVol_Poly");
-   G4LogicalVolume* logVol_Out =
-     new G4LogicalVolume(solid_Out, materi_Poly, "LogVol_Poly");
-   G4Material* materi_Air = materi_Man->FindOrBuildMaterial("G4_AIR");
-   G4LogicalVolume* logVol_In =
-     new G4LogicalVolume(solid_In, materi_Air, "LogVol_Air");
+   G4LogicalVolume* logVol_Poly = 
+     new G4LogicalVolume(solid_Poly, materi_Poly, "LogVol_Poly");
+//   G4LogicalVolume* logVol_Out =
+//     new G4LogicalVolume(solid_Out, materi_Poly, "LogVol_Poly");
+//   G4Material* materi_Air = materi_Man->FindOrBuildMaterial("G4_AIR");
+//   G4LogicalVolume* logVol_In =
+//     new G4LogicalVolume(solid_In, materi_Air, "LogVol_Air");
 
 // Define 'Wall'
    // Define the shape of solid
@@ -86,19 +86,23 @@ G4VPhysicalVolume* Geometry::Construct()
    G4double leng_Y_Wall = 2.*m;
    G4double leng_Z_Wall = 1.*m;
    G4Box* solid_Plate = new G4Box("Solid_Plate", leng_X_Wall/2., leng_Y_Wall/2., leng_Z_Wall/2.);
-//   G4SubtractionSolid* solid_Wall = new G4SubtractionSolid("Solid_Wall", solid_Plate, solid_Out);
+   G4SubtractionSolid* solid_Wall = new G4SubtractionSolid("Solid_Wall", solid_Plate, solid_Out);
    //Define logical volume
    G4Material* materi_Wall = materi_Man->FindOrBuildMaterial("G4_CONCRETE");
-//   G4LogicalVolume* logVol_Wall =
-//     new G4LogicalVolume(solid_Wall, materi_Wall, "LogVol_Wall");
    G4LogicalVolume* logVol_Wall =
-     new G4LogicalVolume(solid_Plate, materi_Wall, "LogVol_Wall");
+     new G4LogicalVolume(solid_Wall, materi_Wall, "LogVol_Wall");
+//   G4LogicalVolume* logVol_Wall =
+//     new G4LogicalVolume(solid_Plate, materi_Wall, "LogVol_Wall");
 
 // Define 'Detector'
    // Define the shape of solid
+   G4double leng_X_Detector = 10.*cm;
+   G4double leng_Y_Detector = 15.*cm;
+   G4double leng_Z_Detector = 10.*cm;
+   G4Box* solid_Detector = new G4Box("Solid_Detector", leng_X_Detector/2., leng_Y_Detector/2., leng_Z_Detector/2.);
    G4Material* materi_Detector = materi_Man->FindOrBuildMaterial("G4_AIR");
    G4LogicalVolume* logVol_Detector =
-     new G4LogicalVolume(solid_Plate, materi_Detector, "LogVol_Detector");
+     new G4LogicalVolume(solid_Detector, materi_Detector, "LogVol_Detector");
    
 // define my sensitive volume BGO論理物体を有感としてSteppingActionでチェックする
    fScoringVol = logVol_Detector;
@@ -119,12 +123,12 @@ G4VPhysicalVolume* Geometry::Construct()
 		     false, copyNum_LogV);
    copyNum_LogV = 1001;
    G4PVPlacement* physVol_Poly = 
-     new G4PVPlacement(trans3D_LogV, "PhysVol_Poly", logVol_Out, physVol_Wall,
+     new G4PVPlacement(trans3D_LogV, "PhysVol_Poly", logVol_Poly, physVol_World,
 		       false, copyNum_LogV);
    copyNum_LogV = 1002;
-   G4PVPlacement* physVol_Air =
-     new G4PVPlacement(trans3D_LogV, "PhysVol_Air", logVol_In, physVol_Poly,
-		       false, copyNum_LogV);
+//   G4PVPlacement* physVol_Air =
+//     new G4PVPlacement(trans3D_LogV, "PhysVol_Air", logVol_In, physVol_Poly,
+//		       false, copyNum_LogV);
    //Set Detector
    pos_X_LogV = 0.0*cm;
    pos_Y_LogV = 0.0*cm;

@@ -6,9 +6,8 @@
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
 
-
 RunAction::RunAction()
- : G4UserRunAction()
+  : G4UserRunAction()
 { 
 // Create analysis manager
   
@@ -17,6 +16,8 @@ RunAction::RunAction()
 
   analysisManager->SetVerboseLevel(1);
   analysisManager->SetFirstHistoId(1);        // Histo Id starts from 1 not from0
+  G4String fileName = "OKTAVIAN";
+  analysisManager->SetFileName(fileName);
   analysisManager->SetActivation(true);
 
   // Book histograms, ntuple
@@ -24,27 +25,33 @@ RunAction::RunAction()
   
   // Creating histograms
   G4String Hist_Name = "Position";
-  analysisManager->CreateH2(Hist_Name, Hist_Name, 100, -1.*m, 1.*m, 100, -1*m, 1.*m);
+  analysisManager->CreateH2(Hist_Name, Hist_Name, 100, -10.*cm, 10.*cm, 100, -10*cm, 10.*cm);
   Hist_Name = "Energy";
-  analysisManager->CreateH1(Hist_Name, Hist_Name, 100, 0, 15*MeV);
-  Hist_Name = "Event_num";
-  analysisManager->CreateH1(Hist_Name, Hist_Name, 1, 0, 1);
+  analysisManager->CreateH1(Hist_Name, Hist_Name, 150, 0, 15*MeV);
 
   // Creating ntuple
+  analysisManager->CreateNtuple("tree", "X:Y:E:Flag:Evt");
+  analysisManager->CreateNtupleDColumn("X");
+  analysisManager->CreateNtupleDColumn("Y");
+  analysisManager->CreateNtupleDColumn("E");
+  analysisManager->CreateNtupleIColumn("Flag");
+  analysisManager->CreateNtupleIColumn("Evt");
+  analysisManager->FinishNtuple();
+
+  // Creating tree
 }
 
 RunAction::~RunAction()
 {
-  delete G4AnalysisManager::Instance();  
+  delete G4AnalysisManager::Instance();
 }
 
 void RunAction::BeginOfRunAction(const G4Run* /*run*/)
 {
     // Get analysis manager and open an output file
   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-
-  G4String fileName = "OKTAVIAN";
-  analysisManager->OpenFile(fileName);
+  analysisManager->OpenFile();
+  Evt = 0;
 }
 
 void RunAction::EndOfRunAction(const G4Run* /*run*/)
@@ -53,6 +60,5 @@ void RunAction::EndOfRunAction(const G4Run* /*run*/)
   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
   analysisManager->Write();
   analysisManager->CloseFile();
-
 }
 

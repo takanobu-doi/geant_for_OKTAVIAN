@@ -5,4 +5,6 @@
 #include "g4root.hh"
 //#include "g4csv.hh"
 
+static G4int Evt;
+
 #endif
