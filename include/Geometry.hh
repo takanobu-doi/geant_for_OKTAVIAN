@@ -9,16 +9,17 @@ class G4VPhysicalVolume;
 class G4LogicalVolume;
 //enum{noBGO=20};
 //------------------------------------------------------------------------------
-  class Geometry : public G4VUserDetectorConstruction
+class Geometry : public G4VUserDetectorConstruction
 //------------------------------------------------------------------------------
 {
-  public:
-    Geometry();
-   ~Geometry();
-
-    G4VPhysicalVolume* Construct();
-    G4LogicalVolume* GetScoringVol() const { return fScoringVol; }
-  protected:
-    G4LogicalVolume*  fScoringVol;
+public:
+  Geometry(G4double r);
+  ~Geometry();
+  
+  G4VPhysicalVolume* Construct();
+  G4LogicalVolume* GetScoringVol() const { return fScoringVol; }
+protected:
+  G4LogicalVolume*  fScoringVol;
+  G4double Radius;
 };
 #endif

@@ -27,15 +27,15 @@
 */
 
 //------------------------------------------------------------------------------
-  Geometry::Geometry() : G4VUserDetectorConstruction(),fScoringVol(0){}
+Geometry::Geometry(G4double r) : G4VUserDetectorConstruction(),fScoringVol(0),Radius(r){}
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-  Geometry::~Geometry() {}
+Geometry::~Geometry() {}
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-  G4VPhysicalVolume* Geometry::Construct()
+G4VPhysicalVolume* Geometry::Construct()
 //------------------------------------------------------------------------------
 {
 // Get pointer to 'Material Manager'
@@ -63,9 +63,9 @@
 
 // Define 'Polyethylene colimetor'
    // Define the shape of solid
-   G4double radius_Out = 5.*cm;
+   G4double radius_Out = 5.5*cm;
    G4double leng_Z_Out = 1.*m;
-   G4double radius_In = 0.5*cm;
+   G4double radius_In = Radius*cm;
    G4double leng_Z_In = leng_Z_Out;
    G4Tubs* solid_Out = new G4Tubs("Solid_Out", 0., radius_Out, leng_Z_Out/2., 0., 360.*deg);
    G4Tubs* solid_In = new G4Tubs("Solid_In", 0., radius_In, leng_Z_In/2., 0., 360.*deg);

@@ -12,9 +12,12 @@
 #include <iostream>
 
 //-------------------------------------------------------------------------------
-  int main( int argc, char** argv )
+int main( int argc, char** argv )
 //-------------------------------------------------------------------------------
 {
+  if(argc<3){
+    return 1;
+  }
    // ============= [ Setting up the application environment ] ================
    typedef  QGSP_BIC PhysicsList;                   // Physics List
    G4String nameMainMacro = "GlobalSetup.mac";      // Initialization  macros
@@ -28,7 +31,7 @@
    G4RunManager * runManager = new G4RunManager;
 
 // Set up mandatory user initialization: Geometry
-   runManager->SetUserInitialization( new Geometry() );
+   runManager->SetUserInitialization( new Geometry(atof(argv[2])) );
 
 // Set up mandatory user initialization: Physics-List
    runManager->SetUserInitialization( new PhysicsList );
