@@ -8,6 +8,7 @@
 #include "G4UnitsTable.hh"
 #include "Analysis.hh"
 #include "Randomize.hh"
+#include "G4SystemOfUnits.hh"
 #include <iomanip>
 
 
@@ -21,26 +22,24 @@ EventAction::~EventAction()
 
 void EventAction::BeginOfEventAction(const G4Event* /*event*/)
 {
-  first_flag = true;
+  SetPos(10000, 10000);
+  SetVec(10000, 10000);
+  SetEnergy(-1);
+  SetFlag(false);
 }
 
 void EventAction::EndOfEventAction(const G4Event* /*event*/)
 {
   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-  if(!first_flag){
-    analysisManager->FillH1(1, GetEnergy());
-    analysisManager->FillH2(1, GetPos(0), GetPos(1));
-    analysisManager->FillNtupleDColumn(0, GetPos(0));
-    analysisManager->FillNtupleDColumn(1, GetPos(1));
-    analysisManager->FillNtupleDColumn(2, GetEnergy());
-    analysisManager->FillNtupleIColumn(3, 1);
-  }else{
-    analysisManager->FillNtupleDColumn(0, -20);
-    analysisManager->FillNtupleDColumn(1, -20);
-    analysisManager->FillNtupleDColumn(2, -1);
-    analysisManager->FillNtupleIColumn(3, 0);
-  }
-  analysisManager->FillNtupleIColumn(4, Evt++);
+  analysisManager->FillH1(1, GetEnergy()/MeV);
+  analysisManager->FillH2(1, GetPos(0)/cm, GetPos(1)/cm);
+  analysisManager->FillNtupleDColumn(0, GetPos(0)/cm);
+  analysisManager->FillNtupleDColumn(1, GetPos(1)/cm);
+  analysisManager->FillNtupleDColumn(2, GetVec(0));
+  analysisManager->FillNtupleDColumn(3, GetVec(1));
+  analysisManager->FillNtupleDColumn(4, GetEnergy()/MeV);
+  analysisManager->FillNtupleIColumn(5, GetFlag());
+  analysisManager->FillNtupleIColumn(6, Evt++);
   analysisManager->AddNtupleRow();
 }
 

@@ -27,7 +27,7 @@
 */
 
 //------------------------------------------------------------------------------
-Geometry::Geometry(G4double r) : G4VUserDetectorConstruction(),fScoringVol(0),Radius(r){}
+Geometry::Geometry(G4double r, G4int materi) : G4VUserDetectorConstruction(),fScoringVol(0),Radius(r),Materi_flag(materi){}
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -43,11 +43,11 @@ G4VPhysicalVolume* Geometry::Construct()
 
 // Define 'World Volume'
    // Define the shape of solid
-   G4double leng_X_World = 100.0*m;         // X-full-length of world 
-   G4double leng_Y_World = 100.0*m;         // Y-full-length of world 
-   G4double leng_Z_World = 100.0*m;         // Z-full-length of world 
+   G4double leng_X_World = 4.0*m;         // X-full-length of world 
+   G4double leng_Y_World = 4.0*m;         // Y-full-length of world 
+   G4double leng_Z_World = 4.0*m;         // Z-full-length of world 
    G4Box* solid_World = 
-     new G4Box("Solid_World", leng_X_World/2.0, leng_Y_World/2.0, leng_Z_World/2.0);
+     new G4Box("Solid_World", leng_X_World/2., leng_Y_World/2., leng_Z_World/2.);
 
    // Define logical volume
    G4Material* materi_World = materi_Man->FindOrBuildMaterial("G4_AIR");
@@ -64,7 +64,7 @@ G4VPhysicalVolume* Geometry::Construct()
 // Define 'Polyethylene colimetor'
    // Define the shape of solid
    G4double radius_Out = 5.5*cm;
-   G4double leng_Z_Out = 1.*m;
+   G4double leng_Z_Out = 1.0*m;
    G4double radius_In = Radius*cm;
    G4double leng_Z_In = leng_Z_Out;
    G4Tubs* solid_Out = new G4Tubs("Solid_Out", 0., radius_Out, leng_Z_Out/2., 0., 360.*deg);
@@ -72,8 +72,21 @@ G4VPhysicalVolume* Geometry::Construct()
    G4SubtractionSolid* solid_Poly = new G4SubtractionSolid("Solid_Poly", solid_Out, solid_In);
    // Define logical volume
    G4Material* materi_Poly = materi_Man->FindOrBuildMaterial("G4_POLYETHYLENE");
-   G4LogicalVolume* logVol_Poly = 
-     new G4LogicalVolume(solid_Poly, materi_Poly, "LogVol_Poly");
+   G4Material* materi_B2O3 = materi_Man->FindOrBuildMaterial("G4_BORON_OXIDE");
+   G4double density = 942; // kg/m3
+   G4Material* materi_Mix = new G4Material("Mix", 942*kg/m3, 2);
+   materi_Mix->AddMaterial(materi_Poly, 90*perCent);
+   materi_Mix->AddMaterial(materi_B2O3, 10*perCent);
+   G4LogicalVolume* logVol_Poly;
+   
+   if(Materi_flag==0){ // with B2O3
+     logVol_Poly = 
+       new G4LogicalVolume(solid_Poly, materi_Mix, "LogVol_Poly");
+   }else if(Materi_flag==1){ // without B2O3
+     logVol_Poly = 
+       new G4LogicalVolume(solid_Poly, materi_Poly, "LogVol_Poly");
+   }
+   
 //   G4LogicalVolume* logVol_Out =
 //     new G4LogicalVolume(solid_Out, materi_Poly, "LogVol_Poly");
 //   G4Material* materi_Air = materi_Man->FindOrBuildMaterial("G4_AIR");
@@ -125,20 +138,21 @@ G4VPhysicalVolume* Geometry::Construct()
    G4PVPlacement* physVol_Poly = 
      new G4PVPlacement(trans3D_LogV, "PhysVol_Poly", logVol_Poly, physVol_World,
 		       false, copyNum_LogV);
-   copyNum_LogV = 1002;
+//   copyNum_LogV = 1002;
 //   G4PVPlacement* physVol_Air =
 //     new G4PVPlacement(trans3D_LogV, "PhysVol_Air", logVol_In, physVol_Poly,
 //		       false, copyNum_LogV);
    //Set Detector
    pos_X_LogV = 0.0*cm;
    pos_Y_LogV = 0.0*cm;
-   pos_Z_LogV = leng_Z_Wall;
+   pos_Z_LogV = leng_Z_Wall/2.+leng_Z_Detector/2.;
    threeVect_LogV = G4ThreeVector(pos_X_LogV, pos_Y_LogV, pos_Z_LogV);
    trans3D_LogV = G4Transform3D(rotMtrx_LogV, threeVect_LogV);
    copyNum_LogV = 3000;
    new G4PVPlacement(trans3D_LogV, "PhysVol_Detector", logVol_Detector, physVol_World,
 		     false, copyNum_LogV);
 
+   G4cout << *(G4Material::GetMaterialTable()) << G4endl;
 // Return the physical world
    return physVol_World;
 }

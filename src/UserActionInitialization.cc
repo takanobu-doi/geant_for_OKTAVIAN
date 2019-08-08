@@ -8,13 +8,13 @@
 #include "RunAction.hh"
 
 //------------------------------------------------------------------------------
-  UserActionInitialization::UserActionInitialization()
-  : G4VUserActionInitialization()
+UserActionInitialization::UserActionInitialization(G4double r,G4int flag)
+  : G4VUserActionInitialization(),Radius(r),Materi_flag(flag)
 //------------------------------------------------------------------------------
 {}
 
 //------------------------------------------------------------------------------
-  UserActionInitialization::~UserActionInitialization()
+UserActionInitialization::~UserActionInitialization()
 //------------------------------------------------------------------------------
 {}
 
@@ -23,14 +23,14 @@
 // SteppingAction BGO中にステップがあればエネルギー付与を求める
 // EventAction　エネルギー付与の和を求めヒストをFillする
 //------------------------------------------------------------------------------
-  void UserActionInitialization::Build() const
+void UserActionInitialization::Build() const
 //------------------------------------------------------------------------------
 {
     EventAction* eventaction = new EventAction();
     SetUserAction( new PrimaryGenerator() );
     SetUserAction(eventaction);
     SetUserAction( new SteppingAction(eventaction) );
-    SetUserAction(new RunAction);
+    SetUserAction(new RunAction(Radius,Materi_flag));
 }
 
 

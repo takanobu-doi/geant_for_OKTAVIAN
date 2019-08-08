@@ -6,7 +6,9 @@
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
 
-RunAction::RunAction()
+#include <string>
+
+RunAction::RunAction(G4double Radius, G4int Materi_flag)
   : G4UserRunAction()
 { 
 // Create analysis manager
@@ -17,6 +19,12 @@ RunAction::RunAction()
   analysisManager->SetVerboseLevel(1);
   analysisManager->SetFirstHistoId(1);        // Histo Id starts from 1 not from0
   G4String fileName = "OKTAVIAN";
+  if(Materi_flag==0){
+    fileName = fileName+"-BoronPolyethy";
+  }else if(Materi_flag==1){
+    fileName = fileName+"-NormalPolyethy";
+  }
+  fileName = fileName+std::to_string((int)(Radius*10));
   analysisManager->SetFileName(fileName);
   analysisManager->SetActivation(true);
 
@@ -30,9 +38,12 @@ RunAction::RunAction()
   analysisManager->CreateH1(Hist_Name, Hist_Name, 150, 0, 15*MeV);
 
   // Creating ntuple
-  analysisManager->CreateNtuple("tree", "X:Y:E:Flag:Evt");
-  analysisManager->CreateNtupleDColumn("X");
-  analysisManager->CreateNtupleDColumn("Y");
+  analysisManager->CreateNtuple("tree",
+				"PX:PY:VX:VY:E:Flag:Evt");
+  analysisManager->CreateNtupleDColumn("PX");
+  analysisManager->CreateNtupleDColumn("PY");
+  analysisManager->CreateNtupleDColumn("VX");
+  analysisManager->CreateNtupleDColumn("VY");
   analysisManager->CreateNtupleDColumn("E");
   analysisManager->CreateNtupleIColumn("Flag");
   analysisManager->CreateNtupleIColumn("Evt");

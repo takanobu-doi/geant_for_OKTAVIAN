@@ -13,7 +13,7 @@ class Geometry : public G4VUserDetectorConstruction
 //------------------------------------------------------------------------------
 {
 public:
-  Geometry(G4double r);
+  Geometry(G4double r, G4int materi);
   ~Geometry();
   
   G4VPhysicalVolume* Construct();
@@ -21,5 +21,6 @@ public:
 protected:
   G4LogicalVolume*  fScoringVol;
   G4double Radius;
+  G4int Materi_flag;
 };
 #endif

@@ -41,11 +41,13 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
   if (volume != fScoringVol) return;
 
   // entering position of neutrons
-  if(fEventAction->GetFlag() && copyNo==3000){
-    fEventAction->SetFlag(false);
-    G4ThreeVector Position = preStepPoint->GetPosition();
-    fEventAction->SetPos(Position.x(), Position.y());
+  if(preStepPoint->GetStepStatus()==fGeomBoundary && copyNo==3000){
+    G4ThreeVector prePosition = preStepPoint->GetPosition();
+    G4ThreeVector postPosition = step->GetPostStepPoint()->GetPosition();
+    fEventAction->SetPos(prePosition.x(), prePosition.y());
+    fEventAction->SetVec(postPosition.x()-prePosition.x(), postPosition.y()-prePosition.y());
     fEventAction->SetEnergy(preStepPoint->GetKineticEnergy());
+    fEventAction->SetFlag(preStepPoint->GetStepStatus()==fGeomBoundary);
   }
 }
 

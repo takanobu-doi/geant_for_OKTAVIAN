@@ -15,7 +15,7 @@
 int main( int argc, char** argv )
 //-------------------------------------------------------------------------------
 {
-  if(argc<3){
+  if(argc<4){
     return 1;
   }
    // ============= [ Setting up the application environment ] ================
@@ -31,13 +31,13 @@ int main( int argc, char** argv )
    G4RunManager * runManager = new G4RunManager;
 
 // Set up mandatory user initialization: Geometry
-   runManager->SetUserInitialization( new Geometry(atof(argv[2])) );
+   runManager->SetUserInitialization( new Geometry(atof(argv[2]), atoi(argv[3])) );
 
 // Set up mandatory user initialization: Physics-List
    runManager->SetUserInitialization( new PhysicsList );
 
 // Set up user initialization: User Actions
-   runManager->SetUserInitialization( new UserActionInitialization() );
+   runManager->SetUserInitialization( new UserActionInitialization(atof(argv[2]),atoi(argv[3])) );
 
 // Initialize G4 kernel
    runManager->Initialize();
@@ -48,17 +48,17 @@ int main( int argc, char** argv )
 
 // Start interactive session
    G4UImanager*   uiManager = G4UImanager::GetUIpointer();
-   G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+//   G4UIExecutive* ui = new G4UIExecutive(argc, argv);
 //   uiManager->ApplyCommand("/control/execute " + nameMainMacro);
 //   uiManager->ApplyCommand("/control/execute " + nameGeneratorMacro);
-//   uiManager->ApplyCommand("/control/execute " + nameVerboseMacro);
+   uiManager->ApplyCommand("/control/execute " + nameVerboseMacro);
 //   uiManager->ApplyCommand("/control/execute " + nameVisMacro);
    uiManager->ApplyCommand("/run/beamOn " + eventNumber);
    
 //   ui->SessionStart();
 
 // Job termination
-   delete ui;
+//   delete ui;
    delete visManager;
    delete runManager;
 

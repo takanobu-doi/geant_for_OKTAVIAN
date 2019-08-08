@@ -20,6 +20,10 @@ public:
     pos[0] = x;
     pos[1] = y;
   }
+  inline void SetVec(G4double x, G4double y){
+    vec[0] = x;
+    vec[1] = y;
+  }
   inline void SetEnergy(G4double e){
     E = e;
   }
@@ -28,6 +32,9 @@ public:
   }
   inline G4double GetPos(G4int i){
     return pos[i];
+  }
+  inline G4double GetVec(G4int i){
+    return vec[i];
   }
   inline G4double GetEnergy(){
     return E;
@@ -38,6 +45,7 @@ public:
 
 private:
   G4double pos[2];
+  G4double vec[2];
   G4double E;
   G4bool first_flag;
 };
