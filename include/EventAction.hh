@@ -16,38 +16,68 @@ public:
 
   virtual void    BeginOfEventAction(const G4Event* event);
   virtual void    EndOfEventAction(const G4Event* event);
-  inline void SetPos(G4double x, G4double y) {
-    pos[0] = x;
-    pos[1] = y;
+  inline void SetFrangePos(G4double x, G4double y) {
+    Frangepos[0] = x;
+    Frangepos[1] = y;
   }
-  inline void SetVec(G4double x, G4double y){
-    vec[0] = x;
-    vec[1] = y;
+  inline void SetDetectorPos(G4double x, G4double y) {
+    Detectorpos[0] = x;
+    Detectorpos[1] = y;
   }
-  inline void SetEnergy(G4double e){
-    E = e;
+  inline void SetFrangeVec(G4double x, G4double y){
+    Frangevec[0] = x;
+    Frangevec[1] = y;
   }
-  inline void SetFlag(G4bool flag){
-    first_flag = flag;
+  inline void SetDetectorVec(G4double x, G4double y){
+    Detectorvec[0] = x;
+    Detectorvec[1] = y;
   }
-  inline G4double GetPos(G4int i){
-    return pos[i];
+  inline void SetFrangeEnergy(G4double e){
+    FrangeE = e;
   }
-  inline G4double GetVec(G4int i){
-    return vec[i];
+  inline void SetDetectorEnergy(G4double e){
+    DetectorE = e;
   }
-  inline G4double GetEnergy(){
-    return E;
+  inline void SetFrangeFlag(G4bool flag){
+    first_Frangeflag = flag;
   }
-  inline G4bool GetFlag(){
-    return first_flag;
+  inline void SetDetectorFlag(G4bool flag){
+    first_Detectorflag = flag;
+  }
+  inline G4double GetFrangePos(G4int i){
+    return Frangepos[i];
+  }
+  inline G4double GetDetectorPos(G4int i){
+    return Detectorpos[i];
+  }
+  inline G4double GetFrangeVec(G4int i){
+    return Frangevec[i];
+  }
+  inline G4double GetDetectorVec(G4int i){
+    return Detectorvec[i];
+  }
+  inline G4double GetFrangeEnergy(){
+    return FrangeE;
+  }
+  inline G4double GetDetectorEnergy(){
+    return DetectorE;
+  }
+  inline G4bool GetFrangeFlag(){
+    return first_Frangeflag;
+  }
+  inline G4bool GetDetectorFlag(){
+    return first_Detectorflag;
   }
 
 private:
-  G4double pos[2];
-  G4double vec[2];
-  G4double E;
-  G4bool first_flag;
+  G4double Frangepos[2];
+  G4double Frangevec[2];
+  G4double FrangeE;
+  G4bool first_Frangeflag;
+  G4double Detectorpos[2];
+  G4double Detectorvec[2];
+  G4double DetectorE;
+  G4bool first_Detectorflag;
 };
 
 #endif

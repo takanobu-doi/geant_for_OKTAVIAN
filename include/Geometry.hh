@@ -17,9 +17,11 @@ public:
   ~Geometry();
   
   G4VPhysicalVolume* Construct();
-  G4LogicalVolume* GetScoringVol() const { return fScoringVol; }
+  G4LogicalVolume* GetScoringVol_Frange() const { return fScoringVol_Frange; }
+  G4LogicalVolume* GetScoringVol_Detector() const { return fScoringVol_Detector; }
 protected:
-  G4LogicalVolume*  fScoringVol;
+  G4LogicalVolume* fScoringVol_Frange;
+  G4LogicalVolume* fScoringVol_Detector;
   G4double Radius;
   G4int Materi_flag;
 };

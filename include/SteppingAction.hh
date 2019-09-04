@@ -15,16 +15,17 @@ class G4LogicalVolume;
 
 class SteppingAction : public G4UserSteppingAction
 {
-  public:
-    SteppingAction(EventAction* eventAction);
-    virtual ~SteppingAction();
-
-    // method from the base class
-    virtual void UserSteppingAction(const G4Step*);
-
-  private:
-    EventAction*  fEventAction;
-    G4LogicalVolume* fScoringVol;
+public:
+  SteppingAction(EventAction* eventAction);
+  virtual ~SteppingAction();
+  
+  // method from the base class
+  virtual void UserSteppingAction(const G4Step*);
+  
+private:
+  EventAction*  fEventAction;
+  G4LogicalVolume* fScoringVol_Frange;
+  G4LogicalVolume* fScoringVol_Detector;
 };
 
 

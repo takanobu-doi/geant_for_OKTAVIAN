@@ -19,11 +19,20 @@ RunAction::RunAction(G4double Radius, G4int Materi_flag)
   analysisManager->SetVerboseLevel(1);
   analysisManager->SetFirstHistoId(1);        // Histo Id starts from 1 not from0
   G4String fileName = "OKTAVIAN";
-  if(Materi_flag==0){
+  switch(Materi_flag){
+  case 0:
     fileName = fileName+"-BoronPolyethy";
-  }else if(Materi_flag==1){
-    fileName = fileName+"-NormalPolyethy";
+    break;
+  case 1:
+    fileName = fileName;
+    break;
+  case 2:
+    fileName = fileName+"-10mm_Zure";
+    break;
+  default:
+    break;
   }
+  
   fileName = fileName+std::to_string((int)(Radius*10));
   analysisManager->SetFileName(fileName);
   analysisManager->SetActivation(true);
@@ -32,20 +41,30 @@ RunAction::RunAction(G4double Radius, G4int Materi_flag)
   //
   
   // Creating histograms
-  G4String Hist_Name = "Position";
-  analysisManager->CreateH2(Hist_Name, Hist_Name, 100, -10.*cm, 10.*cm, 100, -10*cm, 10.*cm);
-  Hist_Name = "Energy";
-  analysisManager->CreateH1(Hist_Name, Hist_Name, 150, 0, 15*MeV);
+  G4String Hist_Name = "Position_Frange";
+  analysisManager->CreateH2(Hist_Name, Hist_Name, 100, -10., 10., 100, -10., 10.);
+  Hist_Name = "Energy_Frange";
+  analysisManager->CreateH1(Hist_Name, Hist_Name, 150, 0, 15);
+  Hist_Name = "Position_Detector";
+  analysisManager->CreateH2(Hist_Name, Hist_Name, 100, -10., 10., 100, -10., 10.);
+  Hist_Name = "Energy_Detector";
+  analysisManager->CreateH1(Hist_Name, Hist_Name, 150, 0, 15);
 
   // Creating ntuple
   analysisManager->CreateNtuple("tree",
 				"PX:PY:VX:VY:E:Flag:Evt");
-  analysisManager->CreateNtupleDColumn("PX");
-  analysisManager->CreateNtupleDColumn("PY");
-  analysisManager->CreateNtupleDColumn("VX");
-  analysisManager->CreateNtupleDColumn("VY");
-  analysisManager->CreateNtupleDColumn("E");
-  analysisManager->CreateNtupleIColumn("Flag");
+  analysisManager->CreateNtupleDColumn("PX_Frange");
+  analysisManager->CreateNtupleDColumn("PY_Frange");
+  analysisManager->CreateNtupleDColumn("VX_Frange");
+  analysisManager->CreateNtupleDColumn("VY_Frange");
+  analysisManager->CreateNtupleDColumn("E_Frange");
+  analysisManager->CreateNtupleIColumn("Flag_Frange");
+  analysisManager->CreateNtupleDColumn("PX_Detector");
+  analysisManager->CreateNtupleDColumn("PY_Detector");
+  analysisManager->CreateNtupleDColumn("VX_Detector");
+  analysisManager->CreateNtupleDColumn("VY_Detector");
+  analysisManager->CreateNtupleDColumn("E_Detector");
+  analysisManager->CreateNtupleIColumn("Flag_Detector");
   analysisManager->CreateNtupleIColumn("Evt");
   analysisManager->FinishNtuple();
 

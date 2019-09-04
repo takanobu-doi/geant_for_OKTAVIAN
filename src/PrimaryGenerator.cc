@@ -36,13 +36,16 @@
 {
   G4double pos_x = 0.;
   G4double pos_y = 0.;
-  G4double pos_z = -3.*m;
+  G4double pos_z = -146.4*cm-50*cm;
   G4ThreeVector position = G4ThreeVector(pos_x, pos_y, pos_z);
-  G4double theta = -atan(5.5*cm/(pos_z+0.5*m))*rad*G4UniformRand();
+//  G4double theta = -atan(5.5*cm/(pos_z+0.5*m))*rad*G4UniformRand();
+//  G4double phi = 360.*deg*G4UniformRand();
+  G4double theta = 180.*deg*G4UniformRand();
   G4double phi = 360.*deg*G4UniformRand();
   G4ThreeVector direction = G4ThreeVector(0., 0., 1.).rotateY(theta);
   direction = direction.rotateZ(phi);
-  fpParticleGun->SetParticleMomentumDirection(direction);  fpParticleGun->SetParticlePosition(position);
+  fpParticleGun->SetParticleMomentumDirection(direction);
+  fpParticleGun->SetParticlePosition(position);
   fpParticleGun->GeneratePrimaryVertex(anEvent);
 }
 

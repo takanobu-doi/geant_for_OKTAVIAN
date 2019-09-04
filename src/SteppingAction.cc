@@ -11,8 +11,10 @@
 SteppingAction::SteppingAction(EventAction* eventAction)
 : G4UserSteppingAction(),
   fEventAction(eventAction),
-  fScoringVol(0)
-{}
+  fScoringVol_Frange(0),
+  fScoringVol_Detector(0)
+{
+}
 
 
 SteppingAction::~SteppingAction()
@@ -21,11 +23,12 @@ SteppingAction::~SteppingAction()
 
 void SteppingAction::UserSteppingAction(const G4Step* step)
 {
-    if (!fScoringVol) {
-        const Geometry* geometry
-             = static_cast<const Geometry*>
-            (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
-         fScoringVol = geometry->GetScoringVol();
+    if (!fScoringVol_Frange && !fScoringVol_Detector) {
+      const Geometry* geometry
+	= static_cast<const Geometry*>
+	(G4RunManager::GetRunManager()->GetUserDetectorConstruction());
+      fScoringVol_Frange = geometry->GetScoringVol_Frange();
+      fScoringVol_Detector = geometry->GetScoringVol_Detector();
     }
 
   // Get PreStepPoint and TouchableHandle objects
@@ -38,16 +41,26 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
 //    G4cout << "copy Number = " << copyNo << G4endl;
     
   // スコアする論理物体かどうか
-  if (volume != fScoringVol) return;
+  if (volume != fScoringVol_Frange && volume != fScoringVol_Detector) return;
 
   // entering position of neutrons
-  if(preStepPoint->GetStepStatus()==fGeomBoundary && copyNo==3000){
-    G4ThreeVector prePosition = preStepPoint->GetPosition();
-    G4ThreeVector postPosition = step->GetPostStepPoint()->GetPosition();
-    fEventAction->SetPos(prePosition.x(), prePosition.y());
-    fEventAction->SetVec(postPosition.x()-prePosition.x(), postPosition.y()-prePosition.y());
-    fEventAction->SetEnergy(preStepPoint->GetKineticEnergy());
-    fEventAction->SetFlag(preStepPoint->GetStepStatus()==fGeomBoundary);
+  if(preStepPoint->GetStepStatus()==fGeomBoundary){
+    if(copyNo==2000){
+      G4ThreeVector prePosition = preStepPoint->GetPosition();
+      G4ThreeVector postPosition = step->GetPostStepPoint()->GetPosition();
+      fEventAction->SetFrangePos(prePosition.x(), prePosition.y());
+      fEventAction->SetFrangeVec(postPosition.x()-prePosition.x(), postPosition.y()-prePosition.y());
+      fEventAction->SetFrangeEnergy(preStepPoint->GetKineticEnergy());
+      fEventAction->SetFrangeFlag(preStepPoint->GetStepStatus()==fGeomBoundary);
+    }
+    if(copyNo==3000){
+      G4ThreeVector prePosition = preStepPoint->GetPosition();
+      G4ThreeVector postPosition = step->GetPostStepPoint()->GetPosition();
+      fEventAction->SetDetectorPos(prePosition.x(), prePosition.y());
+      fEventAction->SetDetectorVec(postPosition.x()-prePosition.x(), postPosition.y()-prePosition.y());
+      fEventAction->SetDetectorEnergy(preStepPoint->GetKineticEnergy());
+      fEventAction->SetDetectorFlag(preStepPoint->GetStepStatus()==fGeomBoundary);
+    }
   }
 }
 
